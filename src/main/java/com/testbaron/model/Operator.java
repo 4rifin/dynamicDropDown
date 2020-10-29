@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Operator")
+@Table(name = "Operator" ,schema = "operator_detail")
 public class Operator implements Serializable{
 
 	/**

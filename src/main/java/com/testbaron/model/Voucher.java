@@ -10,7 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "Voucher")
+@Table(name = "Voucher",schema = "voucher_detail")
 public class Voucher implements Serializable {
 
 	/**
