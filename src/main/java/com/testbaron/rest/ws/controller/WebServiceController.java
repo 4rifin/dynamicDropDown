@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.testbaron.model.Operator;
+import com.testbaron.model.Voucher;
 import com.testbaron.rest.model.MessageInfo;
 import com.testbaron.rest.service.RestService;
 
@@ -111,35 +113,31 @@ public class WebServiceController {
 		}
 	}
 	
-
-	@RequestMapping(value = "/add/operator", method = RequestMethod.GET)
-	public String addOperator(Model model, HttpServletRequest httpServletRequest) {
+	@RequestMapping(value = "/add/operator/{namaOperator}/{status}", method = RequestMethod.GET)
+	public String addOperator(@PathVariable("namaOperator") String namaOperator, @PathVariable("status") String status,
+			Model model, HttpServletRequest httpServletRequest) {
 		try {
-			List<Operator> operatorList = new ArrayList<Operator>();
-			
 			Operator operator = new Operator();
-			operator.setId(1);
-			operator.setName("SIMPATI");
-			operator.setStatus("operator");
-			operatorList.add(operator);
-			Operator operator1 = new Operator();
-			operator1.setId(1);
-			operator1.setName("IM3");
-			operator1.setStatus("operator");
-			operatorList.add(operator1);
-			Operator operator3 = new Operator();
-			operator3.setId(1);
-			operator3.setName("3(Three)");
-			operator3.setStatus("operator");
-			operatorList.add(operator3);
-			Operator operator4 = new Operator();
-			operator4.setId(1);
-			operator4.setName("XL");
-			operator4.setStatus("operator");
-			operatorList.add(operator3);
-			for(Operator objOperator : operatorList){
-				restService.getOperatorService().save(objOperator);
-			}
+			operator.setName(namaOperator);
+			operator.setStatus(status);
+			restService.getOperatorService().save(operator);
+		} catch (Exception e) {
+			e.getMessage();
+		}
+		return "jsp" + "/" + "transaction";
+	}
+	
+	@RequestMapping(value = "/add/voucher/{namaOperator}/{harga}/{pulsa}/{status}", method = RequestMethod.GET)
+	public String addVoucher(@PathVariable("namaOperator") String namaOperator, @PathVariable("harga") String harga,
+			@PathVariable("pulsa") String pulsa, @PathVariable("status") String status, Model model,
+			HttpServletRequest httpServletRequest) {
+		try {
+			Voucher voucher = new Voucher();
+			voucher.setOperator(namaOperator);
+			voucher.setHarga(harga);
+			voucher.setPulsa(pulsa + "Ribu");
+			voucher.setStatus(status);
+			restService.getVoucherService().save(voucher);
 		} catch (Exception e) {
 			e.getMessage();
 		}
