@@ -12,7 +12,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 
 @Entity
-@Table(name = "UserEmail",schema = "user_detail")
+@Table(name = "UserEmail")
 public class User implements Serializable{
 
 	/**
