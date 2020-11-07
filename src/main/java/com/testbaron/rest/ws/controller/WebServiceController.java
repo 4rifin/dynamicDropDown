@@ -1,5 +1,9 @@
 package com.testbaron.rest.ws.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.apache.log4j.Logger;
@@ -7,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.testbaron.model.Operator;
 import com.testbaron.rest.model.MessageInfo;
 import com.testbaron.rest.service.RestService;
 
@@ -103,6 +109,41 @@ public class WebServiceController {
 		} catch (Exception e) {
 			throw new UserIsSelfException("message");
 		}
+	}
+	
+
+	@RequestMapping(value = "/add/operator", method = RequestMethod.GET)
+	public String addOperator(Model model, HttpServletRequest httpServletRequest) {
+		try {
+			List<Operator> operatorList = new ArrayList<Operator>();
+			
+			Operator operator = new Operator();
+			operator.setId(1);
+			operator.setName("SIMPATI");
+			operator.setStatus("operator");
+			operatorList.add(operator);
+			Operator operator1 = new Operator();
+			operator1.setId(1);
+			operator1.setName("IM3");
+			operator1.setStatus("operator");
+			operatorList.add(operator1);
+			Operator operator3 = new Operator();
+			operator3.setId(1);
+			operator3.setName("3(Three)");
+			operator3.setStatus("operator");
+			operatorList.add(operator3);
+			Operator operator4 = new Operator();
+			operator4.setId(1);
+			operator4.setName("XL");
+			operator4.setStatus("operator");
+			operatorList.add(operator3);
+			for(Operator objOperator : operatorList){
+				restService.getOperatorService().save(objOperator);
+			}
+		} catch (Exception e) {
+			e.getMessage();
+		}
+		return "jsp" + "/" + "transaction";
 	}
 	
 	@ResponseStatus(value = HttpStatus.FORBIDDEN, reason = "Can't add yourself") // 403

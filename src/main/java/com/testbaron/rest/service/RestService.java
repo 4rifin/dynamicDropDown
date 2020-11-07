@@ -293,4 +293,36 @@ public class RestService {
 		return null;
 	}
 
+	public UserService getUserService() {
+		return userService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
+	public OperatorService getOperatorService() {
+		return operatorService;
+	}
+
+	public void setOperatorService(OperatorService operatorService) {
+		this.operatorService = operatorService;
+	}
+
+	public VoucherService getVoucherService() {
+		return voucherService;
+	}
+
+	public void setVoucherService(VoucherService voucherService) {
+		this.voucherService = voucherService;
+	}
+
+	public TransactionService getTransactionService() {
+		return transactionService;
+	}
+
+	public void setTransactionService(TransactionService transactionService) {
+		this.transactionService = transactionService;
+	}
+
 }
