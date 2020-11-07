@@ -6,12 +6,12 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
-import org.apache.tomcat.util.codec.binary.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.google.gson.Gson;
 import com.testbaron.model.Operator;
@@ -163,15 +163,7 @@ public class RestService {
 
 	public ResponseEntity<MessageInfo> transaction(String type, String userId, String operator, String harga, MessageInfo messageInfo) {
 		
-		if (harga.equals("")||harga.equals(null)) {
-			messageInfo.setCode(HttpStatus.BAD_REQUEST.toString());
-			messageInfo.setStatus(HttpStatus.BAD_REQUEST);
-			messageInfo.setMessage("failed");
-			messageInfo.setResult(null);
-			return new ResponseEntity<>(messageInfo, HttpStatus.OK);
-		}
-		
-		if (operator.equals("")||harga.equals(null)) {
+		if (StringUtils.isEmpty(harga) || StringUtils.isEmpty(operator)) {
 			messageInfo.setCode(HttpStatus.BAD_REQUEST.toString());
 			messageInfo.setStatus(HttpStatus.BAD_REQUEST);
 			messageInfo.setMessage("failed");
