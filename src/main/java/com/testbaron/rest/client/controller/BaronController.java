@@ -1,14 +1,17 @@
 package com.testbaron.rest.client.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,7 +21,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.testbaron.model.Operator;
 import com.testbaron.model.Transaction;
 import com.testbaron.model.Voucher;
+import com.testbaron.rest.model.MessageInfo;
 import com.testbaron.rest.model.MessageResponse;
+import com.testbaron.rest.model.OperatorDTO;
+import com.testbaron.rest.model.VoucherDTO;
 import com.testbaron.rest.service.RestClientService;
 import com.testbaron.service.VoucherService;
 
@@ -237,5 +243,45 @@ public class BaronController {
 		}
 
 	}
-
+	
+	@PostMapping("/add/operator")
+	public String addOperator(@Valid MessageInfo messageInfo, @RequestBody OperatorDTO params,RedirectAttributes redirectAttrs) {
+		MessageResponse messageResponse = new MessageResponse();
+		try {
+			messageResponse = restClientService.addOperator(params);
+			if(messageResponse.getMessage().contains("Success")){
+				messageType = "success";
+				message = messageResponse.getMessage() + " Response Api "+ messageResponse.getStatus() + messageResponse.getStatus().getReasonPhrase();
+			}else{
+				messageType = "failed";
+				message = messageResponse.getMessage() + " Response Api "+ messageResponse.getStatus() + messageResponse.getStatus().getReasonPhrase();
+			}
+			redirectAttrs.addFlashAttribute("message" , message);
+			redirectAttrs.addFlashAttribute("messageType" , messageType);
+		}catch (Exception e) {
+			e.getMessage();
+		}
+		return message;
+	}
+	
+	@PostMapping("/add/voucher")
+	public String addVoucher(@Valid MessageInfo messageInfo, @RequestBody VoucherDTO params,RedirectAttributes redirectAttrs) {
+		MessageResponse messageResponse = new MessageResponse();
+		try {
+			messageResponse = restClientService.addVoucher(params);
+			if(messageResponse.getMessage().contains("Success")){
+				messageType = "success";
+				message = messageResponse.getMessage() + " Response Api "+ messageResponse.getStatus() + messageResponse.getStatus().getReasonPhrase();
+			}else{
+				messageType = "failed";
+				message = messageResponse.getMessage() + " Response Api "+ messageResponse.getStatus() + messageResponse.getStatus().getReasonPhrase();
+			}
+			redirectAttrs.addFlashAttribute("message" , message);
+			redirectAttrs.addFlashAttribute("messageType" , messageType);
+		}catch (Exception e) {
+			e.getMessage();
+		}
+		return message;
+	}
+	
 }

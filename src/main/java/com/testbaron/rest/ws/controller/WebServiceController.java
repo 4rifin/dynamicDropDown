@@ -1,8 +1,5 @@
 package com.testbaron.rest.ws.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -13,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,12 +21,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.testbaron.model.Operator;
 import com.testbaron.model.Voucher;
 import com.testbaron.rest.model.MessageInfo;
+import com.testbaron.rest.model.OperatorDTO;
+import com.testbaron.rest.model.VoucherDTO;
 import com.testbaron.rest.service.RestService;
+
+/**
+ * response from rest service client
+ */
 
 @Controller
 @RestController
 public class WebServiceController {
-
+	private static String messageType = "info";
+	private static String message = "failed";
 	static Logger log = Logger.getLogger(WebServiceController.class.getName());
 
 	@Autowired
@@ -107,6 +112,30 @@ public class WebServiceController {
 			@Valid MessageInfo messageInfo) {
 		try {
 			ResponseEntity<MessageInfo> messageResult = restService.transactionDelete(type,id,messageInfo);
+			return messageResult;
+		} catch (Exception e) {
+			throw new UserIsSelfException("message");
+		}
+	}
+
+	@RequestMapping(value = "/ws/add/operator", method = RequestMethod.POST)
+	public ResponseEntity<MessageInfo> wsAddOperator(@RequestBody OperatorDTO params,
+			@Valid MessageInfo messageInfo) {
+
+		try {
+			ResponseEntity<MessageInfo> messageResult = restService.createOperator(params, messageInfo);
+			return messageResult;
+		} catch (Exception e) {
+			throw new UserIsSelfException("message");
+		}
+	}
+	
+	@RequestMapping(value = "/ws/add/voucher", method = RequestMethod.POST)
+	public ResponseEntity<MessageInfo> wsAddVoucher(@RequestBody VoucherDTO params,
+			@Valid MessageInfo messageInfo) {
+
+		try {
+			ResponseEntity<MessageInfo> messageResult = restService.createVoucher(params, messageInfo);
 			return messageResult;
 		} catch (Exception e) {
 			throw new UserIsSelfException("message");

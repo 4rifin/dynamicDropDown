@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.testbaron.dao.OperatorDao;
 import com.testbaron.model.Operator;
-import com.testbaron.model.User;
+import com.testbaron.rest.model.OperatorDTO;
 
 @Service
 @Transactional
@@ -40,6 +40,13 @@ public class OperatorService {
 	public void deleteById(long id) {
 
 		operatorDao.deleteById(id);
+	}
+	
+	public void saveOperator(OperatorDTO operatorDTO) {
+		Operator operator = new Operator();
+		operator.setName(operatorDTO.getName());
+		operator.setStatus(operatorDTO.getStatus());
+		save(operator);
 	}
 	
 	

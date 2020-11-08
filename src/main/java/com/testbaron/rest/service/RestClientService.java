@@ -12,6 +12,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import com.testbaron.rest.model.MessageResponse;
+import com.testbaron.rest.model.OperatorDTO;
+import com.testbaron.rest.model.VoucherDTO;
 
 @Service
 @Transactional
@@ -26,8 +28,14 @@ public class RestClientService {
 	@Value("${API.OPERATOR}")
     public String API_OPERATOR;
 	
+	@Value("${API.ADD.OPERATOR}")
+    public String API_ADD_OPERATOR;
+	
 	@Value("${API.VOUCHER}")
     public String API_VOUCHER;
+	
+	@Value("${API.VOUCHER}")
+    public String API_ADD_VOUCHER;
 	
 	@Value("${API.TRANSACTION}")
     public String API_TRANSACTION;
@@ -110,6 +118,29 @@ public class RestClientService {
 		MessageResponse messageResponse = responseEntity.getBody();
 		return messageResponse;
 	}
-
+	
+	public MessageResponse addOperator(OperatorDTO operatorDTO){
+		System.out.println("\nTesting create Operator API----------");
+		
+		RestTemplate restTemplate = new RestTemplate(); 
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
+		headers.add("Authorization", null);
+		HttpEntity<Object> request = new HttpEntity<Object>(operatorDTO, headers);
+		ResponseEntity<MessageResponse> responseEntity = restTemplate.exchange(REST_SERVICE_URI+API_ADD_OPERATOR, HttpMethod.POST, request,MessageResponse.class);
+		MessageResponse messageResponse = responseEntity.getBody();
+		return messageResponse;
+	}
+	
+	public MessageResponse addVoucher(VoucherDTO voucherDTO){
+		System.out.println("\nTesting create Voucher API----------");
+		
+		RestTemplate restTemplate = new RestTemplate(); 
+        MultiValueMap<String, String> headers = new LinkedMultiValueMap<String, String>();
+		headers.add("Authorization", null);
+		HttpEntity<Object> request = new HttpEntity<Object>(voucherDTO, headers);
+		ResponseEntity<MessageResponse> responseEntity = restTemplate.exchange(REST_SERVICE_URI+API_ADD_OPERATOR, HttpMethod.POST, request,MessageResponse.class);
+		MessageResponse messageResponse = responseEntity.getBody();
+		return messageResponse;
+	}
 	
 }

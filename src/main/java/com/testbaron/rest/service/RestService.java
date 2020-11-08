@@ -6,11 +6,14 @@ import java.util.Optional;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
 import com.google.gson.Gson;
@@ -19,6 +22,8 @@ import com.testbaron.model.Transaction;
 import com.testbaron.model.User;
 import com.testbaron.model.Voucher;
 import com.testbaron.rest.model.MessageInfo;
+import com.testbaron.rest.model.OperatorDTO;
+import com.testbaron.rest.model.VoucherDTO;
 import com.testbaron.service.OperatorService;
 import com.testbaron.service.TransactionService;
 import com.testbaron.service.UserService;
@@ -39,6 +44,9 @@ public class RestService {
 	
 	@Autowired
 	TransactionService transactionService;
+	
+	@Autowired
+	RestClientService restClientService;
 
 	public ResponseEntity<MessageInfo> login(String type, String username, String password, MessageInfo messageInfo) {
 
@@ -292,6 +300,63 @@ public class RestService {
 
 		return null;
 	}
+	
+public ResponseEntity<MessageInfo> createOperator(OperatorDTO operatorDTO,MessageInfo messageInfo) {
+	Operator operator = operatorService.findByName(operatorDTO.getName());
+		if ((!ObjectUtils.isEmpty(operator)) && operatorDTO.getName().equals(operator.getName())) {
+			messageInfo.setCode(HttpStatus.ALREADY_REPORTED.toString());
+			messageInfo.setStatus(HttpStatus.ALREADY_REPORTED);
+			messageInfo.setMessage("Conflic Duplicate Data");
+			messageInfo.setResult(null);
+			return new ResponseEntity<>(messageInfo, HttpStatus.ALREADY_REPORTED);
+		}
+		if (operatorService.isRecordFull()){
+			messageInfo.setCode(HttpStatus.ALREADY_REPORTED.toString());
+			messageInfo.setStatus(HttpStatus.ALREADY_REPORTED);
+			messageInfo.setMessage("Record Customer Full");
+			return new ResponseEntity<>(messageInfo, HttpStatus.ALREADY_REPORTED);
+		}
+		operatorService.saveOperator(operatorDTO);
+		
+		OperatorDTO newOperatorDTO = new OperatorDTO();
+		Operator newOperator = operatorService.findByName(operatorDTO.getName());
+		BeanUtils.copyProperties(newOperator, newOperatorDTO);
+		
+		messageInfo.setCode(HttpStatus.CREATED.toString());
+		messageInfo.setStatus(HttpStatus.CREATED);
+		messageInfo.setMessage("Success");
+		messageInfo.setResult(newOperatorDTO);
+		return new ResponseEntity<>(messageInfo, HttpStatus.CREATED);
+	}
+
+	public ResponseEntity<MessageInfo> createVoucher(VoucherDTO voucherDTO, MessageInfo messageInfo) {
+		Voucher voucher = voucherService.findByName(voucherDTO.getOperator());
+		if ((!ObjectUtils.isEmpty(voucher)) && voucherDTO.getPulsa().equals(voucher.getPulsa())
+				&& voucherDTO.getOperator().equals(voucher.getOperator())) {
+			messageInfo.setCode(HttpStatus.ALREADY_REPORTED.toString());
+			messageInfo.setStatus(HttpStatus.ALREADY_REPORTED);
+			messageInfo.setMessage("Conflic Duplicate Data");
+			messageInfo.setResult(null);
+			return new ResponseEntity<>(messageInfo, HttpStatus.ALREADY_REPORTED);
+		}
+		if (voucherService.isRecordFull()) {
+			messageInfo.setCode(HttpStatus.ALREADY_REPORTED.toString());
+			messageInfo.setStatus(HttpStatus.ALREADY_REPORTED);
+			messageInfo.setMessage("Record Customer Full");
+			return new ResponseEntity<>(messageInfo, HttpStatus.ALREADY_REPORTED);
+		}
+		voucherService.saveVoucher(voucherDTO);
+
+		VoucherDTO newVoucherDTO = new VoucherDTO();
+		Voucher newVoucher = voucherService.findByName(voucherDTO.getOperator());
+		BeanUtils.copyProperties(newVoucher, newVoucherDTO);
+
+		messageInfo.setCode(HttpStatus.CREATED.toString());
+		messageInfo.setStatus(HttpStatus.CREATED);
+		messageInfo.setMessage("Success");
+		messageInfo.setResult(newVoucherDTO);
+		return new ResponseEntity<>(messageInfo, HttpStatus.CREATED);
+	}
 
 	public UserService getUserService() {
 		return userService;
@@ -324,5 +389,14 @@ public class RestService {
 	public void setTransactionService(TransactionService transactionService) {
 		this.transactionService = transactionService;
 	}
+
+	public RestClientService getRestClientService() {
+		return restClientService;
+	}
+
+	public void setRestClientService(RestClientService restClientService) {
+		this.restClientService = restClientService;
+	}
+	
 
 }

@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.testbaron.dao.VoucherDao;
+import com.testbaron.model.Operator;
 import com.testbaron.model.Voucher;
+import com.testbaron.rest.model.VoucherDTO;
 
 @Service
 @Transactional
@@ -29,6 +31,15 @@ public class VoucherService {
 	
 	public void save(Voucher voucher) {
 			voucherDao.save(voucher);
+	}
+	
+	public void saveVoucher(VoucherDTO voucherDTO) {
+		Voucher voucher = new Voucher();
+		voucher.setOperator(voucherDTO.getOperator());
+		voucher.setHarga(voucherDTO.getHarga());
+		voucher.setPulsa(voucherDTO.getPulsa() + "Ribu");
+		voucher.setStatus(voucherDTO.getStatus());
+		save(voucher);
 	}
 
 	public List<Voucher> findAllVoucherActive(String status,String operator) {
